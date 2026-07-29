@@ -1,68 +1,58 @@
-# SG TrafficPulse 
+SG TrafficPulse 🚗💨
+SG TrafficPulse is a high-performance, cross-platform mobile application built using React Native and Expo. Designed as a dedicated motorist's co-pilot in Singapore, it integrates real-time Land Transport Authority (LTA) DataMall datasets and OneMap routing service into an interactive, multi-tab driver dashboard.
 
-SG TrafficPulse is a high-performance, cross-platform mobile application built using **React Native and Expo**. It acts as a dedicated motorist's co-pilot in Singapore, overlaying real-time Land Transport Authority (LTA) DataMall datasets—including traffic speeds, live camera feeds, road incidents, and regional carpark availability—onto a single, interactive, edge-to-edge geospatial canvas.
+🌟 Key Features & Improvements
+Interactive Map Canvas (HomeScreen):
 
----
+Displays live traffic incident markers (Accidents 💥, Roadworks 🚧, Vehicle Breakdowns 🚗) pulled from LTA DataMall with regex coordinate extraction for full reliability.
+Tapping any pin opens a contextual bottom modal detailing the exact LTA incident advisory.
+Native Google Maps integration with custom dark mode styling JSON support.
+Global Map Theme Management (MapContext):
 
-##  Architecture & Core Features
+Global state provider allowing instant switching across Standard, Satellite, and Dark map themes across all map components.
+Route & Commute Planner (CommuteScreen):
 
-* **Layered Overlay Interface:** Uses an edge-to-edge backdrop map canvas with absolute-positioned floating UI controllers to maximize map visibility for active drivers.
-* **Concurrent Data Ingestion (`Promise.all`):** Eliminates network bottlenecks by fetching live streams (Traffic Images, Incidents, Speed Bands) concurrently in parallel promises rather than sequentially.
-* **Demand-Driven Caching Throttle:** Evaluates a strict 5-minute client-side time-to-live (TTL) cache window before initiating outbound API pings, saving user data and lowering battery consumption.
-* **Contextual Data Filtering:** Lazily initializes resource-heavy datasets (like live carpark lot availability) within specialized bottom-sheet modals or saved route dashboards rather than overcrowding the master map view.
+Integrates OneMap routing APIs to calculate real-time travel times, road segment details, and nearby carpark lot availability using custom RouteCard components.
+Settings & Preferences (SettingsScreen):
 
----
-## Tech Stack & Key Libraries
-* **Framework:** Expo (React Native Core)
-* **Navigation:** React Navigation (@react-navigation/bottom-tabs, @react-navigation/native-stack)
-* **Maps Engine:** react-native-maps (Geospatial rendering canvas)
-* **Persistent Preferences Store:** @react-native-async-storage/async-storage (Preserves notifications and map configurations)
+Dynamic Local Cache Clearance: Measures actual storage footprint using @react-native-async-storage/async-storage and allows instant manual cache clearing.
+Push & Local Notifications: Configured via expo-notifications for real-time incident reports and congestion alerts, including interactive live test alerts.
+Legal & Compliance Viewer: Embedded LegalModal component providing native modal access to Terms of Service and Privacy Policy documentation.
+iOS & Android Stability:
 
----
-##  Component Directory Blueprint
-
+Uses @react-native-safe-area-context across all root containers to guarantee notch and home-bar compatibility (eliminating deprecated native views).
+Robust HTTP response handling preventing JSON Parse error: Unexpected end of input when handling LTA API network responses.
+🛠️ Tech Stack & Key Libraries
+Framework: Expo (React Native Core)
+Navigation: React Navigation (@react-navigation/bottom-tabs, @react-navigation/native-stack)
+Map Engine: react-native-maps (Google Maps Provider)
+Safe Area Management: react-native-safe-area-context
+Local Persistence: @react-native-async-storage/async-storage
+Notifications Engine: expo-notifications
+External APIs:
+LTA DataMall API (Traffic Incidents, Carpark Availability)
+OneMap API (Route Planning & Geocoding)
+📂 Component Directory Blueprint
 The project follows a modular, feature-based file architecture layout:
 
-```text
 📦 sg-trafficpulse
- ┣ 📂 assets            # Custom icons, vector speedometer graphics, and splash frames
  ┣ 📂 components        # Reusable custom interface cards and bottom sheets
  ┃ ┣ 📜 RouteCard.js    # Card template displaying live congestion & carpark data
- ┃ ┗ 📜 BottomSheet.js  # Lazy-loaded contextual camera snapshot overlay
- ┣ 📂 screens           # Root View screen containers
- ┃ ┣ 📜 HomeScreen.js   # Absolute layout mapping backdrop canvas
- ┃ ┣ 📜 CommuteScreen.js# FlatList recycler feed for bookmarked saved routes
- ┃ ┣ 📜 SettingsScreen.js# Global configuration switches and theme states
- ┃ ┗ 📜 AuthScreen.js   # Session gatekeeper overlay (Login & Registration forms)
- ┣ 📂 services          # Core business services
- ┃ ┣ 📜 ltaApi.js       # Consolidates asynchronous parallel promises to LTA REST endpoints
- ┃ ┗ 📜 authService.js  # Manages local storage user sessions & validation loops
- ┣ 📜 App.js            # Main application entry point initializing global state and routing
- ┗ 📜 package.json      # System dependencies and configuration packages
- ```
----
-## Getting Started
-Follow these steps to set up the repository locally on your development environment
-### Prerequisites
-Make sure you have Node.js installed, along with the Expo Go mobile app on your iOS or Android device for live wireless testing.
-
-### 1. Clone the Repository
-``` bash 
-git clone [https://github.com/your-username/sg-trafficpulse.git](https://github.com/your-username/sg-trafficpulse.git)
-cd sg-trafficpulse
-```
-
-### 2. Install Project Dependencies
-``` bash
-npm install
-```
-
-### 3. Initialize the Expo Dev Server
-``` bash 
-npx expo start
-```
-
-### 4. Scan and Run the Prototype
-* **Physical Device:** Open your phone camera (iOS) or Expo Go App (Android) and scan the QR code displayed in your terminal window.
-
-* **Simulators:** Press a for Android Emulator or i for iOS Simulator directly within your terminal window if you have local development environments configured.
+ ┃ ┗ 📜 LegalModal.js   # Contextual modal container for ToS & Privacy Policy
+ ┣ 📂 context           # Global state providers and static legal data
+ ┃ ┣ 📜 MapContext.js   # Global map theme state provider (Standard / Satellite / Dark)
+ ┃ ┗ 📜 legalText.js    # Terms of Service & Privacy Policy boilerplate text
+ ┣ 📂 screens           # Primary screen views
+ ┃ ┣ 📜 HomeScreen.js   # Absolute layout mapping backdrop with LTA incident pins
+ ┃ ┣ 📜 CommuteScreen.js# Saved route planner dashboard and carpark feed
+ ┃ ┗ 📜 SettingsScreen.js# Map preferences, notifications, cache cleaner, and legal links
+ ┣ 📂 services          # Core business services & utilities
+ ┃ ┣ 📜 cameraMapping.js       # Maps traffic camera IDs to road coordinates & expressways
+ ┃ ┣ 📜 locationUtils.js       # Distance calculations & coordinate parsing helpers
+ ┃ ┣ 📜 ltaApi.js              # Fetches LTA DataMall incidents, cameras, and carpark data
+ ┃ ┣ 📜 notificationService.js # Expo Notification channels, permissions, & local alerts
+ ┃ ┣ 📜 oneMapApiKey.js        # Authentication credentials & token management for OneMap API
+ ┃ ┣ 📜 routeService.js        # Routing calculation & polyline decoding service
+ ┃ ┗ 📜 tripPlannerService.js  # Multi-modal route assembly & trip optimization logic
+ ┣ 📜 App.js            # Main application entry point initializing global state & tabs
+ ┗ 📜 package.json      # System dependencies and npm scripts
