@@ -1,5 +1,3 @@
-import { enrichCameras } from './cameraMapping';
-
 export const LTA_API_KEY = 'jwCfMjG4SLmH+/gfrbzSuA==';
 const LTA_BASE_URL = 'https://datamall2.mytransport.sg/ltaodataservice';
 
@@ -27,25 +25,6 @@ export async function fetchCarparkAvail(carParkID) {
     return carParkID ? allCarparks.filter((cp) => cp.CarParkID === carParkID) : allCarparks;
   } catch (error) {
     console.error('Error in fetchCarparkAvail:', error);
-    return [];
-  }
-}
-
-export async function fetchTrafficImg(camID) {
-  try {
-    const headers = { AccountKey: LTA_API_KEY, accept: 'application/json' };
-    const data = await fetchWithRetry(`${LTA_BASE_URL}/Traffic-Imagesv2`, headers);
-    const raw = data.value || [];
-    const mapped = raw.map((cam, idx) => ({
-      id: cam.CameraID || String(idx),
-      latitude: parseFloat(cam.Latitude),
-      longitude: parseFloat(cam.Longitude),
-      imageUrl: cam.ImageLink,
-    }));
-    const enriched = enrichCameras(mapped);
-    return camID ? enriched.filter((ti) => ti.id === camID) : enriched;
-  } catch (error) {
-    console.error('Error in fetchTrafficImg:', error);
     return [];
   }
 }
