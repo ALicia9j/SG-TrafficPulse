@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  ActivityIndicator,
-  TouchableOpacity,
-  Modal,
-} from 'react-native';
-// 1. Use safe-area-context to avoid deprecation warnings
+import {StyleSheet,View,Text,ActivityIndicator,TouchableOpacity,Modal,} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import MapView, { Marker, PROVIDER_GOOGLE } from 'react-native-maps';
 import { useMapTheme } from '../context/MapContext';
@@ -41,7 +33,7 @@ export default function HomeScreen() {
       const data = await fetchTrafficIncidents();
       setIncidents(data);
 
-      // 2. Notification logic safely inside loadIncidents()
+      //  Notification logic safely inside loadIncidents()
       const isIncidentNotifEnabled = await AsyncStorage.getItem('@pref_incidents');
       if (JSON.parse(isIncidentNotifEnabled) && data.length > 0) {
         const latestIncident = data[0];
