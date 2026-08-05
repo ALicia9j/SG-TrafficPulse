@@ -18,58 +18,6 @@ export default function SettingsScreen() {
   const [legalTitle, setLegalTitle] = useState('');
   const [legalContent, setLegalContent] = useState('');
 
-  // Calculate stored cache size and load notification preferences on screen load
-  useEffect(() => {
-    calculateCacheSize();
-    loadSettings();
-  }, []);
-
-  const calculateCacheSize = async () => {
-    try {
-      const keys = await AsyncStorage.getAllKeys();
-      const stores = await AsyncStorage.multiGet(keys);
-      let totalBytes = 0;
-
-      stores.forEach(([key, value]) => {
-        if (value) {
-          totalBytes += key.length + value.length;
-        }
-      });
-
-      // Convert bytes to Megabytes (MB)
-      const sizeInMB = (totalBytes / (1024 * 1024)).toFixed(1);
-      setCacheSize(`${sizeInMB} MB`);
-    } catch (error) {
-      console.error('Error measuring cache size:', error);
-      setCacheSize('0.0 MB');
-    }
-  };
-
-  const handleClearCache = () => {
-    Alert.alert(
-      'Clear Offline Cache',
-      'Are you sure you want to clear cached routes and offline search data?',
-      [
-        { text: 'Cancel', style: 'cancel' },
-        {
-          text: 'Clear',
-          style: 'destructive',
-          onPress: async () => {
-            try {
-              // Clear AsyncStorage memory keys
-              await AsyncStorage.clear();
-              setCacheSize('0.0 MB');
-              Alert.alert('Success', 'Cache cleared successfully.');
-            } catch (error) {
-              console.error('Failed to clear cache:', error);
-              Alert.alert('Error', 'Failed to clear application cache.');
-            }
-          },
-        },
-      ]
-    );
-  };
-
   // Load saved toggle settings from AsyncStorage
   const loadSettings = async () => {
     try {
@@ -150,11 +98,6 @@ export default function SettingsScreen() {
             ))}
           </View>
         </View>
-
-        <TouchableOpacity style={styles.listRow} onPress={handleClearCache}>
-          <Text style={styles.rowTitle}>Clear Offline Cache</Text>
-          <Text style={styles.rowValue}>{cacheSize}</Text>
-        </TouchableOpacity>
 
         <Text style={styles.sectionHeader}>Notifications</Text>
         <View style={styles.listRow}>
