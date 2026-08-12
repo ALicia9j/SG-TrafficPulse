@@ -1,4 +1,4 @@
-export const LTA_API_KEY = 'jwCfMjG4SLmH+/gfrbzSuA==';
+export const LTA_API_KEY = process.env.LTA_API_KEY;
 const LTA_BASE_URL = 'https://datamall2.mytransport.sg/ltaodataservice';
 
 async function fetchWithRetry(url, headers, retries = 3, delay = 1000) {
