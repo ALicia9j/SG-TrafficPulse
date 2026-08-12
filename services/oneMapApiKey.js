@@ -1,7 +1,7 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const ONEMAP_EMAIL = "jagoh002@mymail.sim.edu.sg";
-const ONEMAP_PASSWORD = "9vKBCHh62jz@AGm";
+const ONEMAP_EMAIL = process.env.ONEMAP_EMAIL;
+const ONEMAP_PASSWORD = process.env.ONEMAP_PASSWORD;
 
 export const getOneMapToken = async () => {
   try {
